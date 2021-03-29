@@ -15,7 +15,6 @@
 
 // call in the required classes
 var NodeHelper = require('node_helper');
-var FileSystemImageSlideshow = require('fs');
 var PlexAPI = require("plex-api");
 var api = null;
 
@@ -38,21 +37,6 @@ module.exports = NodeHelper.create({
       array[randomIndex] = temporaryValue;
     }
     return array;
-  },
-  // sort by filename attribute
-  sortByFilename: function (a, b) {
-    aL = a.toLowerCase();
-    bL = b.toLowerCase();
-    if (aL > bL) return 1;
-    else return -1;
-  },
-  // checks there's a valid image file extension
-  checkValidImageFileExtension: function (filename, extensions) {
-    var extList = extensions.split(',');
-    for (var extIndex = 0; extIndex < extList.length; extIndex++) {
-      if (filename.toLowerCase().endsWith(extList[extIndex])) return true;
-    }
-    return false;
   },
 
   gatherPlexImageList: function (config) {
@@ -92,40 +76,6 @@ module.exports = NodeHelper.create({
       });
     });
   },
-
-
-  // gathers the image list
-  gatherImageList: function (config) {
-    var self = this;
-    // create an empty main image list
-    var imageList = [];
-    for (var i = 0; i < config.imagePaths.length; i++) {
-      this.getFiles(config.imagePaths[i], imageList, config);
-    }
-
-    imageList = config.randomizeImageOrder
-      ? this.shuffleArray(imageList)
-      : imageList.sort(this.sortByFilename);
-
-    return imageList;
-  },
-
-  getFiles(path, imageList, config) {
-    var contents = FileSystemImageSlideshow.readdirSync(path);
-    for (let i = 0; i < contents.length; i++) {
-      var currentItem = path + '/' + contents[i];
-      var stats = FileSystemImageSlideshow.lstatSync(currentItem);
-      if (stats.isDirectory() && config.recursiveSubDirectories) {
-        this.getFiles(currentItem, imageList, config);
-      } else if (stats.isFile()) {
-        var isValidImageFileExtension = this.checkValidImageFileExtension(
-          currentItem,
-          config.validImageFileExtensions
-        );
-        if (isValidImageFileExtension) imageList.push(currentItem);
-      }
-    }
-  },
   // subclass socketNotificationReceived, received notification from module
   socketNotificationReceived: function (notification, payload) {
     if (notification === 'BACKGROUNDSLIDESHOW_REGISTER_CONFIG') {
@@ -133,7 +83,6 @@ module.exports = NodeHelper.create({
       var self = this;
 
       // get the image list
-      // var imageList = this.gatherImageList(payload);
       var imageList = [];
       this.gatherPlexImageList(payload).then((r) => {
         imageList = r;
