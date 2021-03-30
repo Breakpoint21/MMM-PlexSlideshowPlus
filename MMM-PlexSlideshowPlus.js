@@ -1,19 +1,17 @@
 /* global Module */
 
-/* MMM-PlexSlideshow.js
+/* MMM-PlexSlideshowPlus.js
  *
  * Magic Mirror
- * Module: MMM-PlexSlideshow - Modifications by Peter Tewkesbury, Original code by Adam Moses and Darick Carpenter.
+ * Module: MMM-PlexSlideshowPlus - Modifications by Pascal Schumann, Original code by Peter Tewkesbury, Adam Moses and Darick Carpenter.
  *
  * Magic Mirror By Michael Teeuw http://michaelteeuw.nl
  * MIT Licensed.
  *
- * Based Module MMM-BackgroundSlideShow by Darick Carpenter
- * and that is based on MMM-ImageSlideShow by Adam Moses
- * MIT Licensed.
+ * Based Module MMM-PlexSlideshow by Peter Tewkesbury
  */
 
-Module.register("MMM-PlexSlideshow", {
+Module.register("MMM-PlexSlideshowPlusPlus", {
 	// Default module config.
 	defaults: {
 		plex: {
@@ -59,7 +57,7 @@ Module.register("MMM-PlexSlideshow", {
 		this.errorMessage = null;
 		if (this.config.plex.hostname.length == 0 || this.config.plex.username.length == 0 || this.config.plex.password.length == 0) {
 			this.errorMessage =
-				"MMM-PlexSlideshow: Missing required parameter.";
+				"MMM-PlexSlideshowPlus: Missing required parameter.";
 		} else {
 			// create an empty image list
 			this.imageList = [];
@@ -71,14 +69,14 @@ Module.register("MMM-PlexSlideshow", {
 	// Define required scripts.
 	getStyles: function () {
 		// the css contains the make grayscale code
-		return ["PlexSlideshow.css"];
+		return ["PlexSlideshowPlus.css"];
 	},
 	// generic notification handler
 	notificationReceived: function (notification, payload, sender) {
 		if (sender) {
 			// Log.log(this.name + " received a module notification: " + notification + " from sender: " + sender.name);
 			if (notification === "BACKGROUNDSLIDESHOW_IMAGE_UPDATE") {
-				Log.log("MMM-PlexSlideshow: Changing Background");
+				Log.log("MMM-PlexSlideshowPlus: Changing Background");
 				this.suspend();
 				this.updateImage();
 				this.resume();

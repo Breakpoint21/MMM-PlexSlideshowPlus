@@ -1,16 +1,14 @@
 /* global Module */
 
-/* MMM-PlexSlideshow.js
+/* MMM-PlexSlideshowPlus.js
  *
  * Magic Mirror
- * Module: MMM-PlexSlideshow - Modifications by Peter Tewkesbury, Original code by Adam Moses and Darick Carpenter.
+ * Module: MMM-PlexSlideshowPlus - Modifications by Pascal Schumann, Original code by Peter Tewkesbury, Adam Moses and Darick Carpenter.
  *
  * Magic Mirror By Michael Teeuw http://michaelteeuw.nl
  * MIT Licensed.
  *
- * Based Module MMM-BackgroundSlideShow by Darick Carpenter
- * and that is based on MMM-ImageSlideShow by Adam Moses
- * MIT Licensed.
+ * Based Module MMM-PlexSlideshow by Peter Tewkesbury
  */
 
 // call in the required classes
