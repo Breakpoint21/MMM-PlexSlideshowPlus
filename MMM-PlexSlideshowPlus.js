@@ -11,7 +11,7 @@
  * Based Module MMM-PlexSlideshow by Peter Tewkesbury
  */
 
-Module.register("MMM-PlexSlideshowPlusPlus", {
+Module.register("MMM-PlexSlideshowPlus", {
 	// Default module config.
 	defaults: {
 		plex: {

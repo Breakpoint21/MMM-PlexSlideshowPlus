@@ -2,9 +2,9 @@
 
 Show a slideshow of images in the background. Great for a photo frame from instead of a mirror, using photos marked as 'favorite' from your PLEX Server.
 
-The `MMM-PlexSlideshow` module is designed to display images fullscreen, one at a time on a fixed interval, from your PLEX server. These images can be shown in order or at random. The images can transition from one to the other and be shown with no edge (cover) or the enter image(contain).
+The `MMM-PlexSlideshowPlus` module is designed to display images fullscreen, one at a time on a fixed interval, from your PLEX server. These images can be shown in order or at random. The images can transition from one to the other and be shown with no edge (cover) or the enter image(contain).
 
-Based on <a href="https://github.com/AdamMoses-GitHub/MMM-ImageSlideshow/blob/master/MMM-ImageSlideshow.js">MMM-ImageSlideshow</a>.
+Based on <a href="https://github.com/PJTewkesbury/MMM-PlexSlideshow">MMM-PlexSlideshow</a>.
 
 <img src="https://github.com/darickc/MMM-BackgroundSlideshow/blob/master/screenshots/landscape.jpg" style="width: 300px;" />
 <img src="https://github.com/darickc/MMM-BackgroundSlideshow/blob/master/screenshots/portait.jpg" style="width: 300px;" />
@@ -25,7 +25,7 @@ To install this module, from a SSH terminal
 
 ```
 cd ~/MagicMirror/modules
-git clone https://github.com/PJTewkesbury/MMM-PlexSlideshow.git
+git clone https://github.com/Breakpoint21/MMM-PlexSlideshowPlus.git
 cd MMM-PlexSlideshow
 npm install
 ```
@@ -33,7 +33,7 @@ npm install
 To update
 
 ```
-cd ~/MagicMirror/modules/MMM-PlexSlideShow
+cd ~/MagicMirror/modules/MMM-PlexSlideshowPlus
 git pull
 npm install
 ```
@@ -45,11 +45,11 @@ To configure the module, add the module to the modules array in the `config/conf
 ```javascript
 modules: [
   {
-    module: 'MMM-PlexSlideshow',
+    module: 'MMM-PlexSlideshowPlus',
 	position: 'fullscreen_below',
     config: {
 	  plex: {
-		  hostname:"PlexServerName Or IP",
+		  hostname:"PlexServerName or IP",
 		  port:32400,
 		  username:"",
 		  password:"",
@@ -79,8 +79,9 @@ The following properties can be configured:
 |plex   | The connection details for your PLEX server. This is a require value. This is a array of values. See below. |
 |plex.hostname | The IP address or hostname of your PLEX server. This is a required value|
 |plex.port | This is the port number that your PLEX server runs on. This is required and it's value is normally 32400|
-|plex.username | The username of an account that can access the PLEX server.  This is a required value|
-|plex.password | The password for the username of an account that can access the PLEX server. This is a required value|
+|plex.username | The username of an account that can access the PLEX server.|
+|plex.password | The password for the username of an account that can access the PLEX server.|
+|plex.apiToken | The access token for the PLEX server. This will prevent new login emails. ([How to get the access token](https://support.plex.tv/articles/204059436-finding-an-authentication-token-x-plex-token/)) |
 |slideshowSpeed|Integer value, the length of time to show one image before switching to the next, in milliseconds. <br> Default value: 10000 (Which is 10 seconds). <br>This value is __OPTIONAL__|
 |transitionSpeed|Transition speed from one image to the other, transitionImages must be true. Must be a valid css transition duration.<br> Example: '2s'. <br>This value is __OPTIONAL__|
 |backgroundSize|The sizing of the background image. Values can be: <ul><li>cover: Resize the background image to cover the entire container, even if it has to stretch the image or cut a little bit off one of the edges. </il><li>contain: Resize the background image to make sure the image is fully visible.</il></ul> Default value:'cover'. This value is __OPTIONAL___|
