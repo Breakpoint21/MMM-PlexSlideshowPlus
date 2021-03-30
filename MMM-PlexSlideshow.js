@@ -79,6 +79,7 @@ Module.register("MMM-PlexSlideshow", {
 			port: 32400,
 			username: "",
 			password: "",
+			apiToken: ""
 		},
 		// the speed at which to switch between images, in milliseconds
 		slideshowSpeed: 10 * 1000,
