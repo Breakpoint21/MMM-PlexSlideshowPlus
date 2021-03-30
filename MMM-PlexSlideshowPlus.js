@@ -55,7 +55,7 @@ Module.register("MMM-PlexSlideshowPlus", {
 		this.config.identifier = this.identifier;
 		// set no error
 		this.errorMessage = null;
-		if (this.config.plex.hostname.length == 0 || this.config.plex.username.length == 0 || this.config.plex.password.length == 0) {
+		if (this.config.plex.hostname.length == 0) {
 			this.errorMessage =
 				"MMM-PlexSlideshowPlus: Missing required parameter.";
 		} else {
