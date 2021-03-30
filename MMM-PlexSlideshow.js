@@ -13,64 +13,6 @@
  * MIT Licensed.
  */
 
-function httpGetAsync(theUrl, callback) {
-	var xmlHttp = new XMLHttpRequest();
-	xmlHttp.responseType = "blob";
-	xmlHttp.onreadystatechange = function () {
-		if (xmlHttp.readyState == 4 && xmlHttp.status == 200) {
-			var blob = xmlHttp.response; // Note: not oReq.responseText
-			if (blob) {
-				getOrientation(blob, x => {
-					callback(x);
-				});
-			}
-		}
-	};
-	xmlHttp.open("GET", theUrl, true);
-	xmlHttp.send(null);
-}
-
-function getOrientation(file, callback) {	
-	var reader = new FileReader();
-	reader.onload = function (e) {
-		var view = new DataView(e.target.result);
-
-		if (view.getUint16(0, false) != 0xFFD8) { return callback(-2); }
-
-		var length = view.byteLength,
-			offset = 2;
-
-		while (offset < length) {
-			var marker = view.getUint16(offset, false);
-			offset += 2;
-
-			if (marker == 0xFFE1) {
-				if (view.getUint32(offset += 2, false) != 0x45786966) {
-					return callback(-1);
-				}
-				var little = view.getUint16(offset += 6, false) == 0x4949;
-				offset += view.getUint32(offset + 4, little);
-				var tags = view.getUint16(offset, little);
-				offset += 2;
-
-				for (var i = 0; i < tags; i++) {
-					if (view.getUint16(offset + (i * 12), little) == 0x0112) {
-						return callback(view.getUint16(offset + (i * 12) + 8, little));
-					}
-				}
-			}
-			else if ((marker & 0xFF00) != 0xFF00) {
-				break;
-			}
-			else {
-				offset += view.getUint16(offset, false);
-			}
-		}
-		return callback(-1);
-	};
-	reader.readAsArrayBuffer(file);
-}
-
 Module.register("MMM-PlexSlideshow", {
 	// Default module config.
 	defaults: {
@@ -231,31 +173,38 @@ Module.register("MMM-PlexSlideshow", {
 				var div1 = this.div1;
 				var div2 = this.div2;
 
-				// div2.style.backgroundImage = div1.style.backgroundImage;
 				var image = new Image();
 				image.onload = function () {
-					var o = "";
-					// Read file bytes
-					httpGetAsync(this.src, res => {
-						o = res;
-						console.log("Image : "+this.src);
-						console.log("Orientation : "+res);
-						if (o==8)
-						{
-							console.log("Rotating image");
-							div1.style.transform="rotate(90deg)";
-						}
-						else
-						{
-							div1.style.transform="";
-						}
-					});
+					var o = image.orientation;
+					console.log("Image : " + image.src);
+					console.log("Orientation : " + image.orientation);
 
-					div1.style.backgroundImage = "url('" + this.src + "')";
+					var imageTransformCss = "rotate(0deg)";
+					if (o == 2) {
+						imageTransformCss = "scaleX(-1)";
+					} else if (o == 3) {
+						imageTransformCss = "scaleX(-1) scaleY(-1)";
+					} else if (o == 4) {
+						imageTransformCss = "scaleY(-1)";
+					} else if (o == 5) {
+						imageTransformCss = "scaleX(-1) rotate(90deg)";
+					} else if (o == 6) {
+						imageTransformCss = "rotate(90deg)";
+					} else if (o == 7) {
+						imageTransformCss = "scaleX(-1) rotate(-90deg)";
+					} else if (o == 8) {
+						imageTransformCss = "rotate(-90deg)";
+					}
+					div1.style.transform = imageTransformCss;
+
+					div1.style.backgroundImage = "url('" + image.src + "')";
 					div1.style.opacity = "1";
 					div2.style.opacity = "0";
 				};
-				image.src = encodeURI(this.imageList[this.imageIndex]);
+				var i = this.imageList[this.imageIndex];
+
+				image.src = encodeURI(i.url);
+				image.orientation = i.orientation;
 				this.sendNotification("BACKGROUNDSLIDESHOW_IMAGE_UPDATED", { url: image.src });
 				this.imageIndex += 1;
 			} else {

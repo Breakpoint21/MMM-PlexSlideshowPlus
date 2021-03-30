@@ -64,18 +64,20 @@ module.exports = NodeHelper.create({
     var imageList = [];
     return new Promise((resolve, reject) => {
       // Get list of playlists
-      api.query('/playlists').then(function (results2) {
-
+      api.query('/playlists').then(function (playlistsResponse) {
         // Find playlist of photos which is Favorites
-        var r2 = results2.MediaContainer.Metadata.find(x => { return (x.specialPlaylistType == "favorites" && x.playlistType == "photo"); });
+        var playlist = playlistsResponse.MediaContainer.Metadata.find(x => (x.specialPlaylistType == "favorites" && x.playlistType == "photo"));
 
         // Get all items in playlist
-        api.query(r2.key).then(function (results3) {
-          (results3.MediaContainer.Metadata).forEach(e => {
+        api.query(playlist.key).then(function (playlistResponse) {
+          playlistResponse.MediaContainer.Metadata.forEach(e => {
             // Get Url to each item and save
-            var url = "http://" + config.plex.hostname + ":" + config.plex.port + e.Media[0].Part[0].key + "?X-Plex-Token=" + api.authToken;
-            console.log(url);
-            imageList.push(url);
+            var url = `http://${config.plex.hostname}:${config.plex.port}${e.Media[0].Part[0].key}?X-Plex-Token=${api.authToken}`;
+            var orientation = e.Media[0].Part[0].orientation;
+            imageList.push({
+              url: url,
+              orientation: orientation
+            });
           });
           return resolve(imageList);
         });
