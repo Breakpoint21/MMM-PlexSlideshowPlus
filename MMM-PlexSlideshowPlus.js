@@ -17,8 +17,6 @@ Module.register("MMM-PlexSlideshowPlus", {
 		plex: {
 			hostname: "localhost",
 			port: 32400,
-			username: "",
-			password: "",
 			apiToken: ""
 		},
 		// the speed at which to switch between images, in milliseconds
@@ -31,6 +29,8 @@ Module.register("MMM-PlexSlideshowPlus", {
 		// cover: Resize the background image to cover the entire container, even if it has to stretch the image or cut a little bit off one of the edges
 		// contain: Resize the background image to make sure the image is fully visible
 		backgroundSize: "cover", // cover or contain
+		maxHeight: "",
+		offsetTop: "",
 		// transition from one image to the other (may be a bit choppy on slower devices, or if the images are too big)
 		transitionImages: false,
 		// the gradient to make the text more visible
@@ -55,13 +55,14 @@ Module.register("MMM-PlexSlideshowPlus", {
 		this.config.identifier = this.identifier;
 		// set no error
 		this.errorMessage = null;
-		if (this.config.plex.hostname.length == 0) {
+		if (this.config.plex.hostname.length == 0 || this.config.plex.apiToken.length == 0) {
 			this.errorMessage =
-				"MMM-PlexSlideshowPlus: Missing required parameter.";
+				"MMM-PlexSlideshowPlus: Missing required parameter - hostname | apiToken.";
 		} else {
-			// create an empty image list
+			this.browserSupportsExifOrientationNatively = CSS.supports(
+				'image-orientation: from-image'
+			);
 			this.imageList = [];
-			// set beginning image index to 0, as it will auto increment on start
 			this.imageIndex = 0;
 			this.updateImageList();
 		}
@@ -156,9 +157,15 @@ Module.register("MMM-PlexSlideshowPlus", {
 		var div = document.createElement("div");
 		div.id = name + this.identifier;
 		div.style.backgroundSize = this.config.backgroundSize;
+		if (this.config.maxHeight) {
+			div.style.maxHeight = this.config.maxHeight;
+		}
+		if (this.config.offsetTop) {
+			div.style.top = this.config.offsetTop;
+		}
 		div.style.transition =
 			"opacity " + this.config.transitionSpeed + " ease-in-out";
-		div.className = "backgroundSlideShow";
+		div.className = "image";
 		return div;
 	},
 
@@ -193,7 +200,9 @@ Module.register("MMM-PlexSlideshowPlus", {
 					} else if (o == 8) {
 						imageTransformCss = "rotate(-90deg)";
 					}
-					div1.style.transform = imageTransformCss;
+					if (!this.browserSupportsExifOrientationNatively) {
+						div1.style.transform = imageTransformCss;
+					}
 
 					div1.style.backgroundImage = "url('" + image.src + "')";
 					div1.style.opacity = "1";
